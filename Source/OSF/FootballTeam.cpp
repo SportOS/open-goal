@@ -29,7 +29,7 @@ void AFootballTeam::Tick( float DeltaTime )
 AFootballer* AFootballTeam::GetClosestFootballerToBall(ABallsack* ball)
 {
     AFootballer* closestFootballer = nullptr;
-    float closestDistance = INFINITY;
+	float closestDistance = FLT_MAX;
     for (AFootballer* footballer: Footballers) {
         float distance = footballer->GetDistanceTo(ball);
         if (distance < closestDistance) {

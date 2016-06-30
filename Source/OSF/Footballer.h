@@ -23,7 +23,7 @@ public:
         int SprintSpeed;
     } FootballAttributeInfo;
     
-    typedef enum _PendingActionType : NSUInteger {
+    typedef enum class _PendingActionType {
         FootballerActionNone,
         FootballerActionShot,
         FootballerActionPass,

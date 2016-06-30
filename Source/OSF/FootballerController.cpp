@@ -65,7 +65,7 @@ void AFootballerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty
     DOREPLIFETIME(AFootballerController, ControlledFootballer);
 }
 
-#pragma mark Input
+// MARK: Input
 
 void AFootballerController::SetupInputComponent()
 {
@@ -204,7 +204,7 @@ void AFootballerController::SwitchToFootballer(AFootballer* footballer)
 
 AFootballer* AFootballerController::GetAutoswitchFootballer(bool rejectIfAlreadyControlled)
 {
-    float closestDistance = INFINITY;
+    float closestDistance = FLT_MAX;
     AFootballer* closestFootballer = nullptr;
 
     for (AFootballer *footballer : ControlledFootballer->Teammates()) {

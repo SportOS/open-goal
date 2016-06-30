@@ -7,6 +7,8 @@
 #include "Goal.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UnrealNetwork.h"
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 AFootballer::FootballAttributeInfo FA_Sample_Walcott() {
     AFootballer::FootballAttributeInfo attrs;
@@ -113,14 +115,14 @@ void AFootballer::Tick( float DeltaTime )
             GoingForPossession = true;
             ThinksHasPossession = true;
             
-            if (PendingAction.Type != FootballerActionNone) {
+            if (PendingAction.Type != PendingActionType::FootballerActionNone) {
                 // have a pending action: execute it
                 switch (PendingAction.Type) {
-                    case FootballerActionShot:
+					case PendingActionType::FootballerActionShot:
                         ShootBall(PendingAction.Power, PendingAction.Direction);
                         JustKickedBall = true;
                         break;
-                    case FootballerActionPass:
+					case PendingActionType::FootballerActionPass:
                         PassBall(PendingAction.Power, PendingAction.Direction);
                         JustKickedBall = true;
                         break;
@@ -220,29 +222,31 @@ bool AFootballer::IsControlledByPlayer()
     return ControlledByPlayer;
 }
 
-#pragma mark QUEUE_ACTIONS
+// MARK: QUEUE_ACTIONS
+
 void AFootballer::ClearPendingAction()
 {
-    PendingAction.Type = FootballerActionNone;
+    PendingAction.Type = PendingActionType::FootballerActionNone;
     PendingAction.Power = 0;
     PendingAction.Direction = FVector::ZeroVector;
 }
 
 void AFootballer::SetPendingShot(float power, FVector desiredDirection)
 {
-    PendingAction.Type = FootballerActionShot;
+    PendingAction.Type = PendingActionType::FootballerActionShot;
     PendingAction.Power = power;
     PendingAction.Direction = desiredDirection;
 }
 
 void AFootballer::SetPendingPass(float power, FVector desiredDirection)
 {
-    PendingAction.Type = FootballerActionPass;
+    PendingAction.Type = PendingActionType::FootballerActionPass;
     PendingAction.Power = power;
     PendingAction.Direction = desiredDirection;
 }
 
-#pragma mark CONTROL
+// MARK: CONTROL
+
 FVector AFootballer::DesiredMovementOrForwardVector()
 {
     if (DesiredMovement.Size() <= FLT_EPSILON)
@@ -262,7 +266,7 @@ bool AFootballer::CanKickBall()
     return distance.Size() < MIN_DISTANCE_FOR_TOUCH;
 }
 
-#pragma mark DRIBBLING
+// MARK: DRIBBLING
 
 void AFootballer::KnockBallOn_Implementation(float deltaSeconds, float strength) {
     FVector ballVelocity = Ball->GetVelocity();
@@ -284,7 +288,7 @@ bool AFootballer::KnockBallOn_Validate(float deltaSeconds, float strength) {
     return true;
 }
 
-#pragma mark SHOOTING
+// MARK: SHOOTING
 
 static float MAX_POWER = 1.00;
 static float MIN_POWER = 0.5;
@@ -295,7 +299,7 @@ void AFootballer::ShootBall_Implementation(float power, FVector desiredDirection
         return;
     }
     
-    float minDistance = INFINITY;
+    float minDistance = FLT_MAX;
     AGoal* closerGoal = nullptr;
     TActorIterator<AGoal> itr(GetWorld());
     for (; itr; ++itr) {
@@ -373,7 +377,7 @@ AFootballer* AFootballer::FindPassTarget(float power, FVector desiredDirection)
     
     // Find pass target
     AFootballer* closestFootballer = nullptr;
-    float closestDistance = INFINITY;
+    float closestDistance = FLT_MAX;
     
     TArray<AFootballer*> teammates = Teammates(); // separate declaration for debugging
     for (AFootballer* otherFootballer : teammates) {
@@ -442,7 +446,7 @@ void AFootballer::PassBall_Implementation(float power, FVector desiredDirection)
 
 bool AFootballer::PassBall_Validate(float power, FVector direction) { return true; }
 
-#pragma mark MOVEMENT
+// MARK: MOVEMENT
 
 void AFootballer::MoveToBallForKick(FVector desiredEndDirection, float deltaSeconds)
 {
