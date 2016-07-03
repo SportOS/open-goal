@@ -152,7 +152,7 @@ void AFootballerController::KickReleased()
 
 void AFootballerController::SwitchPlayerReleased()
 {
-    if (!ControlledFootballer->GoingForPossession) {
+    if (ControlledFootballer != nullptr && !ControlledFootballer->GoingForPossession) {
         // Only switch if you're not in possession right now
         Autoswitch();
     }
