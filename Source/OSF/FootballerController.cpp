@@ -93,9 +93,9 @@ void AFootballerController::MoveForward(float axisValue)
 //        ControlledFootballer->DesiredMovement.Normalize();
     }
     
-    if (ControlledFootballer != nullptr && InputComponent->GetAxisValue(TEXT("MoveForward")) > 0.1) {
-        UE_LOG(LogTemp, Warning, TEXT("Controlling %s"), *ControlledFootballer->DisplayName);
-    }
+//    if (ControlledFootballer != nullptr && InputComponent->GetAxisValue(TEXT("MoveForward")) > 0.1) {
+//        UE_LOG(LogTemp, Warning, TEXT("Controlling %s"), *ControlledFootballer->DisplayName);
+//    }
 }
 
 void AFootballerController::MoveRight(float axisValue)
@@ -108,9 +108,9 @@ void AFootballerController::MoveRight(float axisValue)
 //        ControlledFootballer->DesiredMovement.Normalize();
     }
     
-    if (ControlledFootballer != nullptr && InputComponent->GetAxisValue(TEXT("MoveRight")) > 0.1) {
-        UE_LOG(LogTemp, Warning, TEXT("Controlling %s"), *ControlledFootballer->DisplayName);
-    }
+//    if (ControlledFootballer != nullptr && InputComponent->GetAxisValue(TEXT("MoveRight")) > 0.1) {
+//        UE_LOG(LogTemp, Warning, TEXT("Controlling %s"), *ControlledFootballer->DisplayName);
+//    }
 }
 
 void AFootballerController::SprintAxisChanged(float axisValue)
@@ -200,6 +200,7 @@ void AFootballerController::SwitchToFootballer(AFootballer* footballer)
     Possess(footballer);
     ControlledFootballer->SetGoingForPossession(true);
     ControlledFootballer->Server_GainPlayerControl(this);
+	UE_LOG(LogTemp, Warning, TEXT("Controlling %s"), *ControlledFootballer->DisplayName);
 }
 
 AFootballer* AFootballerController::GetAutoswitchFootballer(bool rejectIfAlreadyControlled)

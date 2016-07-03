@@ -120,19 +120,19 @@ static struct Formation Formation4231 = {
 static struct Formation FormationDebug = {
     "D-E-B-U-G",
     {
-        { 0, "GK", { 0.5, 0.5 } },
+        { 0, "GK", { 0.1, 0 } },
         
-        { 1, "RB", { 0.6, 1 } },
-        { 2, "RCB", { 0.6, 0.75 } },
-        { 3, "LCB", { 0.6, 0.25 } },
-        { 4, "LB", { 0.6, 0 } },
+        { 1, "RB", { 0.3, 0.8 } },
+        { 2, "RCB", { 0.3, -0.5 } },
+        { 3, "LCB", { 0.3, -0.5 } },
+        { 4, "LB", { 0.3, -0.8 } },
         
-        { 5, "RDM", { 0.7, 0.75 } },
-        { 6, "LDM", { 0.7, 0.25 } },
+        { 5, "RDM", { 0.5, 0.5 } },
+        { 6, "LDM", { 0.5, -0.5 } },
         
-        { 7, "RAM", { 0.8, 1 } },
-        { 8, "CAM", { 0.8, 0.6 } },
-        { 9, "LAM", { 0.8, 0 } },
+        { 7, "RAM", { 0.8, 0.8 } },
+        { 8, "CAM", { 0.8, 0 } },
+        { 9, "LAM", { 0.8, -0.8 } },
         
         { 10, "CF", { 1, 0.4 } },
     }
@@ -214,6 +214,7 @@ AFootballer* ATeamGameState::PlayerFromProperties(AFootballTeam* team, int index
     if (footballer) {
         footballer->DisplayName = name;
         footballer->Team = team;
+		footballer->SetActorLocation(location);
     }
     
     return footballer;
