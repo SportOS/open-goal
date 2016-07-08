@@ -107,6 +107,7 @@ void AFootballer::Tick( float DeltaTime )
     // (i.e. !CanKickBall()), we set it back to false so we can touch it again.
     if (JustKickedBall && !CanKickBall()) JustKickedBall = false;
 
+	PlayerControlIndicator->SetVisibility(ControlledByPlayer);
     if (ControlledByPlayer) {
         // Prevent spamming shots, passes and dribbles.
         // if (JustKickedBall) return;
@@ -147,7 +148,7 @@ void AFootballer::Tick( float DeltaTime )
         }
     } else {
         // AI tick.
-        
+
     }
 }
 
@@ -484,6 +485,11 @@ void AFootballer::MoveToBallForPass(FVector desiredMovement, float deltaSeconds)
     FVector ballMovementPrediction = Ball->GetVelocity() / 10;
     FVector predictedDistanceToBall = distanceToBall + ballMovementPrediction;
     float distanceAngle = FMath::Atan2(distanceToBall.Y, distanceToBall.X);
+
+	// trap the ball if it's close enough
+	if (distanceToBall.Size() > FLT_EPSILON && distanceToBall.Size() < 50) {
+		Ball->GetStaticMeshComponent()->SetPhysicsLinearVelocity(FVector::ZeroVector);
+	}
     
     if (desiredMovement.Size() > FLT_EPSILON && FMath::Abs(distanceAngle - desiredMovementAngle) < M_PI * 0.75) {
         // you are moving toward the ball, so move intensely and assisted toward the ball (sprint basically -- todo make this less sprinty)

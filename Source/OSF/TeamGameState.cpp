@@ -7,10 +7,16 @@
 #include "UnrealNetwork.h"
 
 static UClass* footballerClass;
+static UMaterialInstanceConstant* orangeMesh;
 ATeamGameState::ATeamGameState()
 {
     static ConstructorHelpers::FObjectFinder<UClass> MyBPClass(TEXT("Blueprint'/Game/Blueprints/BPFootballer.BPFootballer_C'"));
     footballerClass = MyBPClass.Object;
+	static ConstructorHelpers::FObjectFinder<UMaterialInstanceConstant> mesh(TEXT("MaterialInstanceConstant'/Game/Materials/MI_Template_BaseOrange.MI_Template_BaseOrange'"));
+	if (mesh.Succeeded())
+	{
+		orangeMesh = mesh.Object;
+	}
 }
 
 void ATeamGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
@@ -182,7 +188,9 @@ void ATeamGameState::LoadSampleState()
         struct FootballerInfo homePlayer = homePlayers[i];
         struct FootballerInfo awayPlayer = awayPlayers[i];
         
-        HomeTeam->Footballers.Add(PlayerFromProperties(HomeTeam, i, homePlayer.Name));
+		AFootballer *homeFootballer = PlayerFromProperties(HomeTeam, i, homePlayer.Name);
+		homeFootballer->GetMesh()->SetMaterial(0, orangeMesh);
+        HomeTeam->Footballers.Add(homeFootballer);
         AwayTeam->Footballers.Add(PlayerFromProperties(AwayTeam, i, awayPlayer.Name));
     }
 }
