@@ -105,6 +105,7 @@ void AFootballer::Tick( float DeltaTime )
     // (i.e. !CanKickBall()), we set it back to false so we can touch it again.
     if (JustKickedBall && !CanKickBall()) JustKickedBall = false;
 
+    PlayerControlIndicator->SetVisibility(ControlledByPlayer);
     if (ControlledByPlayer) {
         // Prevent spamming shots, passes and dribbles.
         // if (JustKickedBall) return;
@@ -253,7 +254,7 @@ FVector AFootballer::DesiredMovementOrForwardVector()
     }
 }
 
-static float MIN_DISTANCE_FOR_TOUCH = 10;
+static float MIN_DISTANCE_FOR_TOUCH = 100;
 
 bool AFootballer::CanKickBall()
 {
@@ -275,8 +276,9 @@ void AFootballer::KnockBallOn_Implementation(float deltaSeconds, float strength)
     Ball->GetStaticMeshComponent()->AddImpulse(neededVelChange, NAME_None, true);
 //    Ball->GetStaticMeshComponent()->ComponentVelocity += neededVelChange;
     
-    FString log = FString::Printf(TEXT("Ball velocity <%0.2f, %0.2f, %0.2f>; applying impulse of %0.2f, %0.2f, %0.2f"), ballVelocity.X, ballVelocity.Y, ballVelocity.Z, neededVelChange.X, neededVelChange.Y, neededVelChange.Z);
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, log);
+    // WARNING: this was basically being called each tick causing the game to be hella slow
+//    FString log = FString::Printf(TEXT("Ball velocity <%0.2f, %0.2f, %0.2f>; applying impulse of %0.2f, %0.2f, %0.2f"), ballVelocity.X, ballVelocity.Y, ballVelocity.Z, neededVelChange.X, neededVelChange.Y, neededVelChange.Z);
+//    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, log);
 }
 
 bool AFootballer::KnockBallOn_Validate(float deltaSeconds, float strength) {
