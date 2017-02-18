@@ -7,10 +7,16 @@
 #include "UnrealNetwork.h"
 
 static UClass* footballerClass;
+static UMaterialInstanceConstant* orangeMesh;
 ATeamGameState::ATeamGameState()
 {
     static ConstructorHelpers::FObjectFinder<UClass> MyBPClass(TEXT("Blueprint'/Game/Blueprints/BPFootballer.BPFootballer_C'"));
     footballerClass = MyBPClass.Object;
+	static ConstructorHelpers::FObjectFinder<UMaterialInstanceConstant> mesh(TEXT("MaterialInstanceConstant'/Game/Materials/MI_Template_BaseOrange.MI_Template_BaseOrange'"));
+	if (mesh.Succeeded())
+	{
+		orangeMesh = mesh.Object;
+	}
 }
 
 void ATeamGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
@@ -120,19 +126,19 @@ static struct Formation Formation4231 = {
 static struct Formation FormationDebug = {
     "D-E-B-U-G",
     {
-        { 0, "GK", { 0.5, 0.5 } },
+        { 0, "GK", { 0.1, 0 } },
         
-        { 1, "RB", { 0.6, 1 } },
-        { 2, "RCB", { 0.6, 0.75 } },
-        { 3, "LCB", { 0.6, 0.25 } },
-        { 4, "LB", { 0.6, 0 } },
+        { 1, "RB", { 0.3, 0.8 } },
+        { 2, "RCB", { 0.3, -0.5 } },
+        { 3, "LCB", { 0.3, -0.5 } },
+        { 4, "LB", { 0.3, -0.8 } },
         
-        { 5, "RDM", { 0.7, 0.75 } },
-        { 6, "LDM", { 0.7, 0.25 } },
+        { 5, "RDM", { 0.5, 0.5 } },
+        { 6, "LDM", { 0.5, -0.5 } },
         
-        { 7, "RAM", { 0.8, 1 } },
-        { 8, "CAM", { 0.8, 0.6 } },
-        { 9, "LAM", { 0.8, 0 } },
+        { 7, "RAM", { 0.8, 0.8 } },
+        { 8, "CAM", { 0.8, 0 } },
+        { 9, "LAM", { 0.8, -0.8 } },
         
         { 10, "CF", { 1, 0.4 } },
     }
@@ -182,7 +188,9 @@ void ATeamGameState::LoadSampleState()
         struct FootballerInfo homePlayer = homePlayers[i];
         struct FootballerInfo awayPlayer = awayPlayers[i];
         
-        HomeTeam->Footballers.Add(PlayerFromProperties(HomeTeam, i, homePlayer.Name));
+		AFootballer *homeFootballer = PlayerFromProperties(HomeTeam, i, homePlayer.Name);
+		homeFootballer->GetMesh()->SetMaterial(0, orangeMesh);
+        HomeTeam->Footballers.Add(homeFootballer);
         AwayTeam->Footballers.Add(PlayerFromProperties(AwayTeam, i, awayPlayer.Name));
     }
 }
@@ -214,6 +222,7 @@ AFootballer* ATeamGameState::PlayerFromProperties(AFootballTeam* team, int index
     if (footballer) {
         footballer->DisplayName = name;
         footballer->Team = team;
+		footballer->SetActorLocation(location);
     }
     
     return footballer;

@@ -65,7 +65,7 @@ void AFootballerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty
     DOREPLIFETIME(AFootballerController, ControlledFootballer);
 }
 
-#pragma mark Input
+// MARK: Input
 
 void AFootballerController::SetupInputComponent()
 {
@@ -93,9 +93,9 @@ void AFootballerController::MoveForward(float axisValue)
 //        ControlledFootballer->DesiredMovement.Normalize();
     }
     
-    if (ControlledFootballer != nullptr && InputComponent->GetAxisValue(TEXT("MoveForward")) > 0.1) {
-        UE_LOG(LogTemp, Warning, TEXT("Controlling %s"), *ControlledFootballer->DisplayName);
-    }
+//    if (ControlledFootballer != nullptr && InputComponent->GetAxisValue(TEXT("MoveForward")) > 0.1) {
+//        UE_LOG(LogTemp, Warning, TEXT("Controlling %s"), *ControlledFootballer->DisplayName);
+//    }
 }
 
 void AFootballerController::MoveRight(float axisValue)
@@ -108,9 +108,9 @@ void AFootballerController::MoveRight(float axisValue)
 //        ControlledFootballer->DesiredMovement.Normalize();
     }
     
-    if (ControlledFootballer != nullptr && InputComponent->GetAxisValue(TEXT("MoveRight")) > 0.1) {
-        UE_LOG(LogTemp, Warning, TEXT("Controlling %s"), *ControlledFootballer->DisplayName);
-    }
+//    if (ControlledFootballer != nullptr && InputComponent->GetAxisValue(TEXT("MoveRight")) > 0.1) {
+//        UE_LOG(LogTemp, Warning, TEXT("Controlling %s"), *ControlledFootballer->DisplayName);
+//    }
 }
 
 void AFootballerController::SprintAxisChanged(float axisValue)
@@ -152,7 +152,7 @@ void AFootballerController::KickReleased()
 
 void AFootballerController::SwitchPlayerReleased()
 {
-    if (!ControlledFootballer->GoingForPossession) {
+    if (ControlledFootballer != nullptr && !ControlledFootballer->GoingForPossession) {
         // Only switch if you're not in possession right now
         Autoswitch();
     }
@@ -200,11 +200,12 @@ void AFootballerController::SwitchToFootballer(AFootballer* footballer)
     Possess(footballer);
     ControlledFootballer->SetGoingForPossession(true);
     ControlledFootballer->Server_GainPlayerControl(this);
+	UE_LOG(LogTemp, Warning, TEXT("Controlling %s"), *ControlledFootballer->DisplayName);
 }
 
 AFootballer* AFootballerController::GetAutoswitchFootballer(bool rejectIfAlreadyControlled)
 {
-    float closestDistance = INFINITY;
+    float closestDistance = FLT_MAX;
     AFootballer* closestFootballer = nullptr;
 
     for (AFootballer *footballer : ControlledFootballer->Teammates()) {

@@ -34,6 +34,8 @@
 *.suo
 *.opensdf
 *.sdf
+*.db
+*.opendb
 
 # Precompiled Assets
 SourceArt/**/*.png
@@ -61,3 +63,5 @@ OSF.xcworkspace/xcuserdata
 # Mac shit
 .DS_Store
 
+# Temp stuff
+enc_temp_folder/*
